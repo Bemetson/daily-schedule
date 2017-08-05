@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Paivajarjestys</string>
+    <string name="title_today">Today</string>
+    <string name="title_week">Week</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+
+    <string name="error_date">Error detected when fetching date</string>
+
+    <string name="eight">8\n--\n10</string>
+    <string name="ten">10\n--\n12</string>
+    <string name="twelve">12\n--\n14</string>
+    <string name="fourteen">14\n--\n16</string>
+    <string name="sixteen">16\n--\n18</string>
+</resources>
