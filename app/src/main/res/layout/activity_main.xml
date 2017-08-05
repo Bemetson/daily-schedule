@@ -16,15 +16,65 @@
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation" />
 
+    <LinearLayout
+        android:id="@+id/weekdays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:background="#ffaafa">
+
+        <Button
+            android:id="@+id/monButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/mon"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <Button
+            android:id="@+id/tueButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <Button
+            android:id="@+id/wedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/wed"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <Button
+            android:id="@+id/thuButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/thu"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <Button
+            android:id="@+id/friButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fri"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/main_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/navigation"
-        android:layout_alignParentTop="true"
-        android:layout_margin="12dp">
-
-
+        android:layout_below="@id/weekdays"
+        android:layout_margin="12dp"
+        android:background="#faafef">
 
     </ScrollView>
 
