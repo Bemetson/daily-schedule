@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context="com.bemetson.paivajarjestys.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
@@ -20,10 +29,10 @@
         android:id="@+id/weekdays"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/my_toolbar"
+        android:background="#ffaafa"
         android:orientation="horizontal"
-        android:visibility="visible"
-        android:background="#ffaafa">
+        android:visibility="gone">
 
         <Button
             android:id="@+id/monButton"
