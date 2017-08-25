@@ -1,10 +1,7 @@
 package com.bemetson.paivajarjestys;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,17 +12,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
     Calendar calendar = Calendar.getInstance();
     int day = calendar.get(Calendar.DAY_OF_WEEK);
+    EditText description, location;
 
     ScrollView scrollview;
 
@@ -60,10 +57,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.main_scrollview, fragment, "weekday_fragment");
             fragmentTransaction.commit();
         }
-
-
-
-
     }
 
     @Override
@@ -82,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Log.w("Menu", "Menu clicked");
+            NewEntryDialogFragment dialog = new NewEntryDialogFragment();
+            dialog.show(getFragmentManager(), "Juu");
+
             return true;
         }
 
@@ -139,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return R.string.error_date;
     }
-
 
 
 }
