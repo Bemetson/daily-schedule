@@ -2,30 +2,40 @@ package com.bemetson.paivajarjestys;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     Calendar calendar = Calendar.getInstance();
     int day = calendar.get(Calendar.DAY_OF_WEEK);
     EditText description, location;
+    Button mon_button, tue_button, wed_button, thu_button, fri_button;
+    List<Button> buttonList = new ArrayList<Button>();
 
     ScrollView scrollview;
 
@@ -48,11 +58,17 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         this.setTitle(setDate(day));
 
-        /* Here we inflate our /layout/weekday_view.xml into MainActivity's scrollview
-        LayoutInflater inflater = getLayoutInflater();
-        LinearLayout weekday_view = (LinearLayout) inflater.inflate(R.layout.weekday_view, null, false);
-        scrollview = (ScrollView) findViewById(R.id.main_scrollview);
-        scrollview.addView(weekday_view);*/
+        mon_button = (Button) findViewById(R.id.monButton);
+        tue_button = (Button) findViewById(R.id.tueButton);
+        wed_button = (Button) findViewById(R.id.wedButton);
+        thu_button = (Button) findViewById(R.id.thuButton);
+        fri_button = (Button) findViewById(R.id.friButton);
+        buttonList.add(mon_button);
+        buttonList.add(tue_button);
+        buttonList.add(wed_button);
+        buttonList.add(thu_button);
+        buttonList.add(fri_button);
+        addButtonOnClicks();
 
         // Here we initialize the basic view of the application
         FragmentManager fragmentManager = getFragmentManager();
@@ -115,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     //params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                     //scrollview.setLayoutParams(params);
                     weekdays.setVisibility(View.VISIBLE);
+                    setButtonBolding();
                     addV = false;
                     return true;
             }
@@ -180,6 +197,54 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void setButtonBolding() {
+        switch (day) {
+            case Calendar.MONDAY:
+                mon_button.setTypeface(Typeface.DEFAULT_BOLD);
+                mon_button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                //mon_button.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark));
+                //mon_button.getBackground().setColorFilter(0xFF94c0d3, PorterDuff.Mode.MULTIPLY);
+                //tue_button.getBackground().setColorFilter(0xFF679db5, PorterDuff.Mode.MULTIPLY);
+                break;
+            case Calendar.TUESDAY:
+                tue_button.setTypeface(Typeface.DEFAULT_BOLD);
+                tue_button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                break;
+            case Calendar.WEDNESDAY:
+                wed_button.setTypeface(Typeface.DEFAULT_BOLD);
+                wed_button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                break;
+            case Calendar.THURSDAY:
+                thu_button.setTypeface(Typeface.DEFAULT_BOLD);
+                thu_button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                break;
+            case Calendar.FRIDAY:
+                fri_button.setTypeface(Typeface.DEFAULT_BOLD);
+                fri_button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        }
+    }
+
+    private void addButtonOnClicks() {
+        for (Button b : buttonList) {
+            final Button button = b;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    resetBoldingOnButtons();
+                    button.setTypeface(Typeface.DEFAULT_BOLD);
+                    button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                }
+            });
+        }
+    }
+
+    private void resetBoldingOnButtons() {
+        for (Button b : buttonList) {
+            b.setTypeface(Typeface.DEFAULT);
+            b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        }
     }
 }
 

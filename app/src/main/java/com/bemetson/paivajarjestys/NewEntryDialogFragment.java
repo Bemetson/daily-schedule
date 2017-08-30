@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,7 +147,10 @@ public class NewEntryDialogFragment extends DialogFragment {
         }
 
         description = (EditText) myview.findViewById(R.id.description_edittext);
+        description.setInputType(InputType.TYPE_CLASS_TEXT);
         location = (EditText) myview.findViewById(R.id.location_edittext);
+        location.setInputType(InputType.TYPE_CLASS_TEXT);
+
 
         cancel = (Button) myview.findViewById(R.id.dialog_cancel);
         add = (Button) myview.findViewById(R.id.dialog_ok);
