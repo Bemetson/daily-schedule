@@ -5,9 +5,12 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     EditText description, location;
 
     ScrollView scrollview;
+
+    // Boolean value used to check whether we should add a view in addElement method or not
+    Boolean addV = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +109,13 @@ public class MainActivity extends AppCompatActivity {
                    // params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                     //scrollview.setLayoutParams(params);
                     weekdays.setVisibility(View.GONE);
+                    addV = true;
                     return true;
                 case R.id.navigation_dashboard:
                     //params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                     //scrollview.setLayoutParams(params);
                     weekdays.setVisibility(View.VISIBLE);
+                    addV = false;
                     return true;
             }
             return false;
@@ -135,6 +143,43 @@ public class MainActivity extends AppCompatActivity {
         return R.string.error_date;
     }
 
+    public void addElement(String description, int id) {
+        LinearLayout target;
+        Weekday_textview wdtext;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1.0f;
+        params.gravity = Gravity.CENTER;
+        wdtext = new Weekday_textview(this, "Missing", "Data");
+        wdtext.setBackgroundResource(R.drawable.background_box);
+        wdtext.setLayoutParams(params);
+        wdtext.setGravity(Gravity.CENTER);
+        wdtext.text_apply(description);
 
+        if (addV) {
+            switch (id) {
+                case R.id.weekday_8:
+                    target = (LinearLayout) this.findViewById(R.id.weekday_8);
+                    target.addView(wdtext);
+                    break;
+                case R.id.weekday_10:
+                    target = (LinearLayout) this.findViewById(R.id.weekday_10);
+                    target.addView(wdtext);
+                    break;
+                case R.id.weekday_12:
+                    target = (LinearLayout) this.findViewById(R.id.weekday_12);
+                    target.addView(wdtext);
+                    break;
+                case R.id.weekday_14:
+                    target = (LinearLayout) this.findViewById(R.id.weekday_14);
+                    target.addView(wdtext);
+                    break;
+                case R.id.weekday_16:
+                    target = (LinearLayout) this.findViewById(R.id.weekday_16);
+                    target.addView(wdtext);
+                    break;
+            }
+        }
+
+    }
 }
 
