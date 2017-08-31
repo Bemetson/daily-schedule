@@ -33,14 +33,64 @@ public class NewEntryDialogFragment extends DialogFragment {
     EditText description, location;
     Button cancel, add;
     int id, calendar_date, day_c;
+    View myview;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View myview = inflater.inflate(R.layout.dialog, null);
+        myview = inflater.inflate(R.layout.dialog, null);
 
+        calendar_date = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        // Initializing radio buttons
+        initialize_radiobuttos();
+
+        description = (EditText) myview.findViewById(R.id.description_edittext);
+        description.setInputType(InputType.TYPE_CLASS_TEXT);
+        location = (EditText) myview.findViewById(R.id.location_edittext);
+        location.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+        cancel = (Button) myview.findViewById(R.id.dialog_cancel);
+        add = (Button) myview.findViewById(R.id.dialog_ok);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!description.getText().toString().isEmpty() && !location.getText().toString().isEmpty() &&
+                        !(day == null || hour == null)) {
+                    desc = description.getText().toString();
+                    loc = location.getText().toString();
+                    if (calendar_date == day_c) {
+                        ((MainActivity) getActivity()).addElement((desc + "\n\n" + loc), id);
+                    }
+
+                    dismiss();
+                } else {
+                    Toast toast = Toast.makeText(myview.getContext(), R.string.dialog_error, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        });
+
+        builder.setView(myview)
+                .setTitle(R.string.add_item);
+
+        // Create the AlertDialog object and return it
+        return builder.create();
+
+    }
+
+    private void initialize_radiobuttos() {
         RadioButton r_mon = (RadioButton) myview.findViewById(R.id.radio_monday);
         RadioButton r_tue = (RadioButton) myview.findViewById(R.id.radio_tuesday);
         RadioButton r_wed = (RadioButton) myview.findViewById(R.id.radio_wednesday);
@@ -52,9 +102,6 @@ public class NewEntryDialogFragment extends DialogFragment {
         container.add(r_thu);
         container.add(r_fri);
 
-        calendar_date = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-
         for(RadioButton item : container) {
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,28 +112,28 @@ public class NewEntryDialogFragment extends DialogFragment {
                     switch(v.getId()) {
                         case R.id.radio_monday:
                             if (checked)
-                                day = "Monday";
-                                day_c = Calendar.MONDAY;
-                                break;
+                                day = "monday";
+                            day_c = Calendar.MONDAY;
+                            break;
                         case R.id.radio_tuesday:
                             if (checked)
-                                day = "Tuesday";
-                                day_c = Calendar.TUESDAY;
+                                day = "tuesday";
+                            day_c = Calendar.TUESDAY;
                             break;
                         case R.id.radio_wednesday:
                             if (checked)
-                                day = "Wednesday";
-                                day_c = Calendar.WEDNESDAY;
+                                day = "wednesday";
+                            day_c = Calendar.WEDNESDAY;
                             break;
                         case R.id.radio_thursday:
                             if (checked)
-                                day = "Thursday";
-                                day_c = Calendar.THURSDAY;
+                                day = "thursday";
+                            day_c = Calendar.THURSDAY;
                             break;
                         case R.id.radio_friday:
                             if (checked)
-                                day = "Friday";
-                                day_c = Calendar.FRIDAY;
+                                day = "friday";
+                            day_c = Calendar.FRIDAY;
                             break;
 
                     }
@@ -117,74 +164,34 @@ public class NewEntryDialogFragment extends DialogFragment {
                         case R.id.radio_8:
                             if (checked)
                                 hour = "8";
-                                id = R.id.weekday_8;
-                                break;
+                            id = R.id.weekday_8;
+                            break;
                         case R.id.radio_10:
                             if (checked)
                                 hour = "10";
-                                id = R.id.weekday_10;
-                                break;
+                            id = R.id.weekday_10;
+                            break;
                         case R.id.radio_12:
                             if (checked)
                                 hour = "12";
-                                id = R.id.weekday_12;
-                                break;
+                            id = R.id.weekday_12;
+                            break;
                         case R.id.radio_14:
                             if (checked)
                                 hour = "14";
-                                id = R.id.weekday_14;
-                                break;
+                            id = R.id.weekday_14;
+                            break;
                         case R.id.radio_16:
                             if (checked)
                                 hour = "16";
-                                id = R.id.weekday_16;
-                                break;
+                            id = R.id.weekday_16;
+                            break;
 
                     }
 
                 }
             });
         }
-
-        description = (EditText) myview.findViewById(R.id.description_edittext);
-        description.setInputType(InputType.TYPE_CLASS_TEXT);
-        location = (EditText) myview.findViewById(R.id.location_edittext);
-        location.setInputType(InputType.TYPE_CLASS_TEXT);
-
-
-        cancel = (Button) myview.findViewById(R.id.dialog_cancel);
-        add = (Button) myview.findViewById(R.id.dialog_ok);
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!description.getText().toString().isEmpty() && !location.getText().toString().isEmpty() &&
-                        !(day == null || hour == null)) {
-                    desc = description.getText().toString();
-                    loc = location.getText().toString();
-                    if (calendar_date == day_c) {
-                        ((MainActivity) getActivity()).addElement((desc + "\n\n" + loc), id);
-                    }
-                    dismiss();
-                } else {
-                    Toast toast = Toast.makeText(myview.getContext(), R.string.dialog_error, Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-
-        builder.setView(myview)
-                .setTitle(R.string.add_item);
-
-        // Create the AlertDialog object and return it
-        return builder.create();
 
     }
 }

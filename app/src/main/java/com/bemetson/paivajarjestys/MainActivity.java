@@ -2,6 +2,7 @@ package com.bemetson.paivajarjestys;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     Calendar calendar = Calendar.getInstance();
     int day = calendar.get(Calendar.DAY_OF_WEEK);
-    EditText description, location;
     Button mon_button, tue_button, wed_button, thu_button, fri_button;
     List<Button> buttonList = new ArrayList<Button>();
+    final String PREF_NAME = "FIRST_START_PREF_FILE";
 
     ScrollView scrollview;
 
@@ -54,21 +57,22 @@ public class MainActivity extends AppCompatActivity {
 
         scrollview = (ScrollView) findViewById(R.id.main_scrollview);
 
+        // Here we determine whether app is launched for the first time
+        SharedPreferences first_time = getSharedPreferences(PREF_NAME, 0);
+        if (first_time.getBoolean("app_first_time", true)) {
+            Log.w("FIRST TIME", "LAUNCH");
+            first_time_launch();
+
+            first_time.edit().putBoolean("app_first_time", false).apply();
+        } else {
+            Log.w("FIRST TIME", "FIRST LAUNCH HAS BEEN DONE");
+            //first_time.edit().putBoolean("app_first_time", true).apply();
+            //debug_checkFileExists("monday"); //debug test has passed 31.8: 15:45
+        }
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         this.setTitle(setDate(day));
-
-        mon_button = (Button) findViewById(R.id.monButton);
-        tue_button = (Button) findViewById(R.id.tueButton);
-        wed_button = (Button) findViewById(R.id.wedButton);
-        thu_button = (Button) findViewById(R.id.thuButton);
-        fri_button = (Button) findViewById(R.id.friButton);
-        buttonList.add(mon_button);
-        buttonList.add(tue_button);
-        buttonList.add(wed_button);
-        buttonList.add(thu_button);
-        buttonList.add(fri_button);
-        addButtonOnClicks();
 
         // Here we initialize the basic view of the application
         FragmentManager fragmentManager = getFragmentManager();
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.main_scrollview, fragment, "weekday_fragment");
             fragmentTransaction.commit();
         }
+
+        // Here we initialize buttons
+        initializeButtons();
     }
 
     @Override
@@ -111,27 +118,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            // Logic pending
-
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.addRule(RelativeLayout.ABOVE, R.id.navigation);
-            params.setMargins(12, 12, 12, 12);
-
             LinearLayout weekdays = (LinearLayout) findViewById(R.id.weekdays);
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                    // params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                     //scrollview.setLayoutParams(params);
                     weekdays.setVisibility(View.GONE);
+                    resetBoldingOnButtons();
                     addV = true;
                     return true;
                 case R.id.navigation_dashboard:
                     //params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                     //scrollview.setLayoutParams(params);
                     weekdays.setVisibility(View.VISIBLE);
-                    setButtonBolding();
+                    if (addV) {
+                        setButtonBolding();
+                    }
                     addV = false;
                     return true;
             }
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int setDate(int date) {
-        Log.e("TAG", Integer.toString(date));
+        //Log.e("DATE NUMBER", Integer.toString(date));
         switch(date) {
             case Calendar.MONDAY:
                 return R.string.monday;
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1.0f;
         params.gravity = Gravity.CENTER;
-        wdtext = new Weekday_textview(this, "Missing", "Data");
+        wdtext = new Weekday_textview(this, "ERROR", "SOMETHING WENT WRONG");
         wdtext.setBackgroundResource(R.drawable.background_box);
         wdtext.setLayoutParams(params);
         wdtext.setGravity(Gravity.CENTER);
@@ -226,6 +228,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initializeButtons() {
+        mon_button = (Button) findViewById(R.id.monButton);
+        tue_button = (Button) findViewById(R.id.tueButton);
+        wed_button = (Button) findViewById(R.id.wedButton);
+        thu_button = (Button) findViewById(R.id.thuButton);
+        fri_button = (Button) findViewById(R.id.friButton);
+        buttonList.add(mon_button);
+        buttonList.add(tue_button);
+        buttonList.add(wed_button);
+        buttonList.add(thu_button);
+        buttonList.add(fri_button);
+        addButtonOnClicks();
+    }
+
     private void addButtonOnClicks() {
         for (Button b : buttonList) {
             final Button button = b;
@@ -246,5 +262,37 @@ public class MainActivity extends AppCompatActivity {
             b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         }
     }
+
+    private void first_time_launch() {
+        File monday = new File(this.getFilesDir(), "monday");
+        File tuesday = new File(this.getFilesDir(), "tuesday");
+        File wednesday = new File(this.getFilesDir(), "wednesday");
+        File thursday = new File(this.getFilesDir(), "thursday");
+        File friday = new File(this.getFilesDir(), "friday");
+
+        // Above code seems to only create reference to a newly created File object.
+        // An actual file is created in code below
+        try {
+            monday.createNewFile();
+            tuesday.createNewFile();
+            wednesday.createNewFile();
+            thursday.createNewFile();
+            friday.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Test methods
+    private void debug_checkFileExists(String filename) {
+        File file = getBaseContext().getFileStreamPath(filename);
+        boolean yee = file.exists();
+        if (yee) {
+            Log.w("FILE CHECK PASSED", filename + " exists");
+        } else {
+            Log.w("FILE CHECK FAILED", filename + " doesn't exist");
+        }
+    }
+
 }
 
