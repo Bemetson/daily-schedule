@@ -34,10 +34,13 @@
     <string name="add_item">Add new entry</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
     <string name="dialog">Choose day and time of your entry</string>
 
     <string name="description">Description</string>
     <string name="location">Location</string>
 
     <string name="dialog_error">Please fill or select all fields</string>
+    <string name="dialog_delete_entry">Delete entry</string>
+    <string name="dialog_confirm_deletion">Are you sure you want to delete:</string>
 </resources>

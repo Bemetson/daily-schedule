@@ -163,41 +163,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addElement(String description, int id) {
-        LinearLayout target;
+        LinearLayout target = (LinearLayout) this.findViewById(R.id.weekday_8);
         Weekday_textview wdtext;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1.0f;
         params.gravity = Gravity.CENTER;
-        wdtext = new Weekday_textview(this, "ERROR", "SOMETHING WENT WRONG");
-        wdtext.setBackgroundResource(R.drawable.background_box);
-        wdtext.setLayoutParams(params);
-        wdtext.setGravity(Gravity.CENTER);
-        wdtext.text_apply(description);
+
+        Boolean targetInit = false;
+        //wdtext.text_apply(description);
 
         if (addV) {
             switch (id) {
                 case R.id.weekday_8:
                     target = (LinearLayout) this.findViewById(R.id.weekday_8);
-                    target.addView(wdtext);
+                    targetInit = true;
                     break;
                 case R.id.weekday_10:
                     target = (LinearLayout) this.findViewById(R.id.weekday_10);
-                    target.addView(wdtext);
+                    targetInit = true;
                     break;
                 case R.id.weekday_12:
                     target = (LinearLayout) this.findViewById(R.id.weekday_12);
-                    target.addView(wdtext);
+                    targetInit = true;
                     break;
                 case R.id.weekday_14:
                     target = (LinearLayout) this.findViewById(R.id.weekday_14);
-                    target.addView(wdtext);
+                    targetInit = true;
                     break;
                 case R.id.weekday_16:
                     target = (LinearLayout) this.findViewById(R.id.weekday_16);
-                    target.addView(wdtext);
+                    targetInit = true;
                     break;
             }
         }
+
+        if (targetInit) {
+            wdtext = new Weekday_textview(this, description, target);
+            wdtext.setBackgroundResource(R.drawable.background_box);
+            wdtext.setLayoutParams(params);
+            wdtext.setGravity(Gravity.CENTER);
+            target.addView(wdtext);
+        }
+
 
     }
 

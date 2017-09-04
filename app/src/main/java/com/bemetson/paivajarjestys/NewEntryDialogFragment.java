@@ -73,7 +73,6 @@ public class NewEntryDialogFragment extends DialogFragment {
                     if (calendar_date == day_c) {
                         ((MainActivity) getActivity()).addElement((desc + "\n\n" + loc), id);
                     }
-
                     dismiss();
                 } else {
                     Toast toast = Toast.makeText(myview.getContext(), R.string.dialog_error, Toast.LENGTH_SHORT);
