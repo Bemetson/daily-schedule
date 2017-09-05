@@ -2,32 +2,32 @@ package com.bemetson.paivajarjestys;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     Button mon_button, tue_button, wed_button, thu_button, fri_button;
     List<Button> buttonList = new ArrayList<Button>();
     final String PREF_NAME = "FIRST_START_PREF_FILE";
+    Fragment frag;
+
 
     ScrollView scrollview;
 
@@ -258,6 +260,29 @@ public class MainActivity extends AppCompatActivity {
                     resetBoldingOnButtons();
                     button.setTypeface(Typeface.DEFAULT_BOLD);
                     button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                    int id = button.getId();
+                    switch (id) {
+                        case R.id.monButton:
+                            resetFragmentView();
+                            readFile(MainActivity.this, "monday");
+                            break;
+                        case R.id.tueButton:
+                            resetFragmentView();
+                            readFile(MainActivity.this, "tuesday");
+                            break;
+                        case R.id.wedButton:
+                            resetFragmentView();
+                            readFile(MainActivity.this, "wednesday");
+                            break;
+                        case R.id.thuButton:
+                            resetFragmentView();
+                            readFile(MainActivity.this, "thursday");
+                            break;
+                        case R.id.friButton:
+                            resetFragmentView();
+                            readFile(MainActivity.this, "friday");
+                            break;
+                    }
                 }
             });
         }
@@ -287,6 +312,80 @@ public class MainActivity extends AppCompatActivity {
             friday.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private String readFile(Context context, String filename) {
+        String res = "";
+        try {
+            InputStream inputStream = context.openFileInput(filename);
+
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader= new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String read = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((read = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(read);
+                }
+
+                inputStream.close();
+                res = stringBuilder.toString();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("FILE NOT FOUND ERROR", "ERROR");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("IOEXCEPTION", "ERROR");
+        }
+
+        return res;
+    }
+
+    private void resetFragmentView() {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment frag = fragmentManager.findFragmentByTag("weekday_fragment");
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.detach(frag);
+        fragmentTransaction.attach(frag);
+        fragmentTransaction.commit();
+    }
+
+    private void createViewFromSavedData(String data) {
+        String[] data_array = data.split(";");
+        for (String item : data_array) {
+            String[] h_d = item.split(":");
+            String hour = h_d[0];
+            String description = h_d[1];
+
+            LinearLayout target = (LinearLayout) findViewById(R.id.weekday_8);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.weight = 1.0f;
+            params.gravity = Gravity.CENTER;
+            switch (hour) {
+                case "8":
+                    target = (LinearLayout) findViewById(R.id.weekday_8);
+                    break;
+                case "10":
+                    target = (LinearLayout) findViewById(R.id.weekday_10);
+                    break;
+                case "12":
+                    target = (LinearLayout) findViewById(R.id.weekday_12);
+                    break;
+                case "14":
+                    target = (LinearLayout) findViewById(R.id.weekday_14);
+                    break;
+                case "16":
+                    target = (LinearLayout) findViewById(R.id.weekday_16);
+                    break;
+            }
+            Weekday_textview wdtext = new Weekday_textview(this, description, target);
+            wdtext.setBackgroundResource(R.drawable.background_box);
+            wdtext.setLayoutParams(params);
+            wdtext.setGravity(Gravity.CENTER);
+            target.addView(wdtext);
         }
     }
 
