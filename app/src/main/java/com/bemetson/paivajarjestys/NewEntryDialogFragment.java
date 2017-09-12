@@ -3,6 +3,7 @@ package com.bemetson.paivajarjestys;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,8 +38,13 @@ public class NewEntryDialogFragment extends DialogFragment {
     int id, calendar_date, day_c;
     View myview;
 
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        //Initialize variables
+        day = "";
+        hour = "";
+
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -70,9 +78,16 @@ public class NewEntryDialogFragment extends DialogFragment {
                         !(day == null || hour == null)) {
                     desc = description.getText().toString();
                     loc = location.getText().toString();
+                    String data = desc + "\n\n" + loc;
+                    String filedata = hour + ":" + desc + "-" + loc + ";";
                     if (calendar_date == day_c) {
-                        ((MainActivity) getActivity()).addElement((desc + "\n\n" + loc), id);
+                        ((MainActivity) getActivity()).addElement((data), id);
                     }
+                    //FOR DEBUG
+                    //((MainActivity) getActivity()).addElement((data), id);
+
+                    writeToFile(getActivity().getApplicationContext(), day, filedata);
+
                     dismiss();
                 } else {
                     Toast toast = Toast.makeText(myview.getContext(), R.string.dialog_error, Toast.LENGTH_SHORT);
@@ -192,5 +207,16 @@ public class NewEntryDialogFragment extends DialogFragment {
             });
         }
 
+    }
+
+    private void writeToFile(Context context, String filename, String data) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_APPEND));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Write to file exception", "Failed to write: " + e.toString());
+        }
     }
 }

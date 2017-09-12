@@ -43,4 +43,6 @@
     <string name="dialog_error">Please fill or select all fields</string>
     <string name="dialog_delete_entry">Delete entry</string>
     <string name="dialog_confirm_deletion">Are you sure you want to delete:</string>
+
+    <string name="addview_success">Entry added, refresh views to see it</string>
 </resources>

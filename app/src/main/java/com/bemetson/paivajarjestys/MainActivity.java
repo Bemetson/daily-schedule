@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Button mon_button, tue_button, wed_button, thu_button, fri_button;
     List<Button> buttonList = new ArrayList<Button>();
     final String PREF_NAME = "FIRST_START_PREF_FILE";
-    Fragment frag;
+    String day_string = "";
 
 
     ScrollView scrollview;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
             first_time.edit().putBoolean("app_first_time", false).apply();
         } else {
-            Log.w("FIRST TIME", "FIRST LAUNCH HAS BEEN DONE");
+            Log.w("FIRST TIME DONE", "FIRST LAUNCH HAS BEEN DONE");
             //first_time.edit().putBoolean("app_first_time", true).apply();
             //debug_checkFileExists("monday"); //debug test has passed 31.8: 15:45
         }
@@ -88,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Here we initialize buttons
         initializeButtons();
+
+        // Here we show saved data, adding views to weekend view fragment
+        if (day_string.length() > 0) {
+            readFile(this, day_string);
+        }
+
     }
 
     @Override
@@ -148,14 +155,19 @@ public class MainActivity extends AppCompatActivity {
         //Log.e("DATE NUMBER", Integer.toString(date));
         switch(date) {
             case Calendar.MONDAY:
+                day_string = "monday";
                 return R.string.monday;
             case Calendar.TUESDAY:
+                day_string = "tuesday";
                 return R.string.tuesday;
             case Calendar.WEDNESDAY:
+                day_string = "wednesday";
                 return R.string.wednesday;
             case Calendar.THURSDAY:
+                day_string = "thursday";
                 return R.string.thursday;
             case Calendar.FRIDAY:
+                day_string = "friday";
                 return R.string.friday;
             case Calendar.SATURDAY | Calendar.SUNDAY:
                 return R.string.weekend;
@@ -197,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
                     targetInit = true;
                     break;
             }
+        } else {
+            Toast toast = Toast.makeText(this, R.string.addview_success ,Toast.LENGTH_SHORT);
+            toast.show();
         }
 
         if (targetInit) {
@@ -283,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
                             readFile(MainActivity.this, "friday");
                             break;
                     }
+
                 }
             });
         }
@@ -315,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String readFile(Context context, String filename) {
+    private void readFile(Context context, String filename) {
         String res = "";
         try {
             InputStream inputStream = context.openFileInput(filename);
@@ -341,7 +357,10 @@ public class MainActivity extends AppCompatActivity {
             Log.e("IOEXCEPTION", "ERROR");
         }
 
-        return res;
+        if (res.length() > 0) {
+            Log.w("READ FILE DATA", res);
+            createViewFromSavedData(res);
+        }
     }
 
     private void resetFragmentView() {
@@ -351,14 +370,20 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.detach(frag);
         fragmentTransaction.attach(frag);
         fragmentTransaction.commit();
+        fragmentManager.executePendingTransactions();
     }
 
     private void createViewFromSavedData(String data) {
+        if (data.length() <= 0) {
+            return;
+        }
+
         String[] data_array = data.split(";");
         for (String item : data_array) {
             String[] h_d = item.split(":");
             String hour = h_d[0];
-            String description = h_d[1];
+            String[] description = h_d[1].split("-");
+            String description_trimmed = description[0] + "\n\n" + description[1];
 
             LinearLayout target = (LinearLayout) findViewById(R.id.weekday_8);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -381,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     target = (LinearLayout) findViewById(R.id.weekday_16);
                     break;
             }
-            Weekday_textview wdtext = new Weekday_textview(this, description, target);
+            Weekday_textview wdtext = new Weekday_textview(this, description_trimmed, target);
             wdtext.setBackgroundResource(R.drawable.background_box);
             wdtext.setLayoutParams(params);
             wdtext.setGravity(Gravity.CENTER);
